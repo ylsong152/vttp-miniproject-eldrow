@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Leaderboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        a {
+            text-decoration: none;
+        }
+        h1 {
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex flex-column align-items-center">
+        <h1>Leaderboard</h1>
+        <div class="container">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td scope="col">Rank</td>
+                        <td scope="col">Name</td>
+                        <td scope="col">Score</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="score, iterStat : ${scores}">
+                        <td th:text="${(currentPage - 1) * pageSize + iterStat.index + 1}"></td>
+                        <td th:text="${score.playerName}"></td>
+                        <td th:text="${score.score}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination Navigation -->
+        <div>
+            <a th:if="${currentPage > 1}" th:href="@{/leaderboard(page=${currentPage - 1})}"><button class="btn btn-dark">&lt;&lt;</button></a>
+            <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span>
+            <a th:if="${currentPage < totalPages}" th:href="@{/leaderboard(page=${currentPage + 1})}"><button class="btn btn-dark">&gt;&gt;</button></a>
+        </div>
+        
+        <div class="pt-5">
+            <a href="/" class="btn btn-dark">Main menu</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eldrow - Wordle Game</title>
+    <link rel="stylesheet" href="/css/game.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+</head>
+
+<body>
+
+
+    <!-- Gameover screen -->
+    <div th:if="${gameOver}">
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <h4>Game Over! Thanks for playing!</h4>
+            <p>The word was: <span th:text="${targetWord}" style="font-weight: bold;"></span></p>
+
+            <div>
+                <img th:src="${score == 0 ? 'https://media.giphy.com/media/ht4yvN9Yx4dmIJJ9GB/giphy.gif' : 
+                         score >= 1 and score <= 2 ? 'https://media.giphy.com/media/7kwEUNbQUZS3m/giphy.gif' :
+                         score >= 3 and score <= 5 ? 'https://media.giphy.com/media/d3mlE7uhX8KFgEmY/giphy.gif' :
+                         score >= 6 and score <= 8 ? 'https://media.giphy.com/media/eHdQnRAi0myGuaquvg/giphy.gif' :
+                         'https://media.giphy.com/media/3oGRFgnYup0LlUvdcY/giphy.gif'}" 
+                 alt="score-image" style="max-width: 230px; max-height: auto;">
+            </div>
+
+            <p>Your final score: <strong><span th:text="${score}"></span></strong></p>
+            <p>Save score to the leaderboards?</p>
+        </div>
+
+        <form th:action="@{/game/saveScore}" method="post">
+            <div class="d-flex flex-row justify-content-center align-items-center gap-3">
+                <div class="input-group input-group-sm" style="position: relative;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Enter Name</span>
+                    </div>
+                    <input type="text" name="playerName" class="form-control" maxlength="12" required/>
+                </div>
+                <button type="submit" class="btn btn-dark">Save</button>
+                <input type="hidden" th:value="${score}" name="score" />
+            </div>
+        </form>
+    </div>
+
+
+
+
+    <div class="d-flex flex-row gap-5" th:unless="${gameOver}">
+        <!-- Game Form -->
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h1>E L D R O W</h1>
+            <h4>Enter a 5-letter word</h4>
+            <form th:action="@{/game/makeGuess}" th:object="${guess}" method="post" class="md-5">
+                <div class="input-group input-group-sm mb-3" style="position: relative;">
+                    <!-- Add relative positioning here -->
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Enter Guess</span>
+                    </div>
+                    <input type="text" th:field="*{guess}" maxlength="5" oninput="toUpperCaseInput(this)" autofocus
+                        class="form-control" />
+                </div>
+
+                <!-- SOMETHING WRONG IDK WHY, IT BRICKS THE CODE BELOW IT ALSO -->
+                <div class="hidden-messages d-flex flex-col justify-content-center align-items-center">
+                    <div th:if="${#fields.hasErrors('guess')}" class="alert alert-danger">
+                        <p th:each="err : ${#fields.errors('guess')}" th:text="${err}"></p>
+                    </div>
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                        <p>Error in guess field</p>
+                    </div>
+                    
+                    <div th:if="${invalidWord}">
+                        <p><strong>Invalid word. Please try again.</strong></p>
+                    </div>
+                </div>
+
+                <button type="submit" style="display:none">Guess</button>
+            </form>
+
+            <!-- Display Feedback -->
+            <div th:if="${feedback != null}" class="feedback-container p-2 d-flex flex-row gap-3">
+                <p>Feedback: <span th:text="${feedback}"></span></p>
+                <p>Correct: <span th:utext="${guessCorrect ? '&#x2713;' : '&#x2718;'}"></span></p>
+            </div>
+            <div class="feedback-container">
+
+                <div class="p-2">
+                    <p>Score: <span th:text="${score}"></span></p>
+                </div>
+
+                <!-- FOR TESTING UNCOMMENT TO SEE TARGET WORD -->
+                <div class="p-2">
+                        <p>word: <span th:text="${targetWord}"></span></p>
+                    </div>
+
+                <div class="p-2">
+                    <p>Attempts remaining: <span th:text="${game.attemptsRemaining}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display Previous Guesses and Feedback -->
+            <div class="previous-guesses">
+                <div th:if="${reversedPreviousGuesses != null}" class="d-flex flex-column align-items-center">
+                    <h5>Previous Guesses</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Guess</th>
+                                <th scope="col">Feedback</th>
+                                <th scope="col">Correct</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="previousGuesses, iterStat : ${reversedPreviousGuesses}">
+                                <td scope="row" th:text="${iterStat.index + 1}"></td>
+                                <td th:text="${previousGuesses.guess}"></td>
+                                <td th:text="${previousGuesses.feedback}"></td>
+                                <td th:utext="${previousGuesses.isCorrect ? '&#x2713;' : '&#x2718;'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </div>
+    <div class="pt-5">
+        <a href="/" class="btn btn-dark">Main menu</a>
+    </div>
+</body>
+
+<script>
+    function toUpperCaseInput(input) {
+        input.value = input.value.toUpperCase();
+    }
+</script>
+
+</html>

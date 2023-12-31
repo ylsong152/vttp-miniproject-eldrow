@@ -1,0 +1,31 @@
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+h1 {
+    margin-bottom: 0.5em;
+}
+
+h4 {
+    margin-bottom: 1.5em;
+}
+
+.feedback-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.previous-guesses {
+    font-size: small;
+}
+td {
+    text-align: center;
+}
