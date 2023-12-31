@@ -1,16 +1,22 @@
-FROM maven:3-eclipse-temurin-21
+FROM maven:3-eclipse-temurin-21 AS builder
 
-ARG APP_DIR=/app
-WORKDIR ${APP_DIR}
+WORKDIR /src
 
 COPY mvnw .
+COPY mvnw.cmd .
 COPY pom.xml .
 COPY .mvn .mvn
 COPY src src
 
 RUN mvn package -Dmaven.test.skip=true
 
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+COPY --from=builder /src/target/Eldrow-0.0.1-SNAPSHOT.jar app.jar
+
 ENV PORT=8080
+
 EXPOSE $PORT
 
-ENTRYPOINT SERVER_PORT=${PORT} java -jar target/Eldrow-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
