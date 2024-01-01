@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-21 AS builder
+FROM maven:3-eclipse-temurin-21
 
 WORKDIR /src
 
@@ -10,13 +10,10 @@ COPY src src
 
 RUN mvn package -Dmaven.test.skip=true
 
-FROM eclipse-temurin:21-jre
-WORKDIR /app
-
-COPY --from=builder /src/target/Eldrow-0.0.1-SNAPSHOT.jar app.jar
-
 ENV PORT=8080
+ENV SPRING_REDIS_HOST=localhost SPRING_REDIS_PORT=6379
+ENV SPRING_REDIS_USERNAME= SPRING_REDIS_PASSWORD=
 
-EXPOSE $PORT
+EXPOSE ${PORT}
 
-ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+ENTRYPOINT SERVER_PORT=${PORT} java -jar target/Eldrow-0.0.1-SNAPSHOT.jar
