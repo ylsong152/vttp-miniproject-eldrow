@@ -53,7 +53,6 @@ public class GameController {
         Collections.reverse(reversedPreviousGuesses);
         Integer score = currentGame.getScore();
 
-        // NO ERROR WITH JAVA, BUT THYMELEAF CAN'T DISPLAY ERROR MSG
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             model.addAttribute("game", currentGame);
@@ -99,7 +98,7 @@ public class GameController {
         model.addAttribute("invalidWord", false);
         model.addAttribute("reversedPreviousGuesses", reversedPreviousGuesses);
 
-        // TARGET WORD, REMOVE AFTER TESTING
+        // TARGET WORD, USED FOR TESTING
         model.addAttribute("targetWord", currentGame.getTargetWord());
         
         return "game";
