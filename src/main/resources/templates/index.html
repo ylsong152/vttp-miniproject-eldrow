@@ -19,9 +19,14 @@
     
     <div class="d-flex flex-column align-items-center">
         <h1>Welcome to Eldrow.</h1>
+
+        <div class="d-flex w-100 justify-content-between">
+            <div></div>
+            <p class="text-muted">scuffed wordle-esque game</p>
+        </div>
         <div>
             <form th:action="@{/startNewGame}" th:object="${guess}" method="get">
-                <div class="container mt-5">
+                <div class="container mt-4">
                     <button formaction="/startNewGame" type="submit" class="me-4 btn btn-dark">Play</button>
                     <button formaction="/leaderboard" type="submit" class="btn btn-dark">Leaderboard</button>
                 </div>

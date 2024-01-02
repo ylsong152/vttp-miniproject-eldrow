@@ -52,9 +52,9 @@
 
     <div class="d-flex flex-row gap-5" th:unless="${gameOver}">
         <!-- Game Form -->
-        <div class="d-flex flex-column justify-content-center align-items-center">
+        <div class="d-flex flex-column justify-content-center align-items-center test">
             <h1>E L D R O W</h1>
-            <h4>Enter a 5-letter word</h4>
+            <h5>Enter a 5-letter word</h5>
             <form th:action="@{/game/makeGuess}" th:object="${guess}" method="post" class="md-5">
                 <div class="input-group input-group-sm mb-3" style="position: relative;">
                     <!-- Add relative positioning here -->
@@ -83,11 +83,14 @@
             </form>
 
             <!-- Display Feedback -->
-            <div th:if="${feedback != null}" class="feedback-container p-2 d-flex flex-row gap-3">
-                <p>Feedback: <span th:text="${feedback}"></span></p>
+            <div th:if="${feedback != null}" class="d-flex flex-column align-items-center">
+                <p style="margin-bottom: 0;">Feedback: <span th:text="${feedback}"></span></p>
+                <p style="cursor: pointer; font-size: smaller; margin-bottom: 0;" data-placement="top" title="G = Correct letter, correct position Y = Correct letter, wrong position X = Wrong letter">
+                    Hover for info
+                </p>
             </div>
+            
             <div class="feedback-container">
-
                 <div class="p-2">
                     <p>Score: <span th:text="${score}"></span></p>
                 </div>
@@ -104,7 +107,7 @@
         </div>
 
         <!-- Display Previous Guesses and Feedback -->
-            <div class="previous-guesses">
+            <div class="previous-guesses ml-5">
                 <div th:if="${reversedPreviousGuesses != null}" class="d-flex flex-column align-items-center">
                     <h5>Previous Guesses</h5>
                     <table class="table">

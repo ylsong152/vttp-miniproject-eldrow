@@ -29,3 +29,7 @@ h4 {
 td {
     text-align: center;
 }
+
+.mouseover {
+    cursor: pointer;
+}
