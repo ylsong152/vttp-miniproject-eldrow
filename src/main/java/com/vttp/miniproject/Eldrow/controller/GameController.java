@@ -73,10 +73,10 @@ public class GameController {
 
         boolean guessCorrect = false;
         GuessResult result = gameService.handleGuess(guess.getGuess());
+        score = currentGame.getScore();
         boolean gameOver = gameService.isGameOver();
         guessCorrect = result.isCorrect();  
         String feedback = result.getFeedback();
-        
         
         if (gameService.isGameOver()) {
             model.addAttribute("gameOver", true);

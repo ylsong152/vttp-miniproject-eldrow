@@ -43,25 +43,27 @@ public class GameService {
     
         String feedback = checkGuess(guess);
         boolean isCorrect = feedback.equals("GGGGG");
-        Game.GuessFeedback guessFeedback = new Game.GuessFeedback();
-        guessFeedback.setGuess(guess);
 
         if (isCorrect) {
             currentGame.setLastCorrectWord(currentGame.getTargetWord());
             incrementScore();
-            setNewTargetWord();
-            resetTargetWordMap();
-            guessFeedback.setCorrect(true);
         }
-
+    
+        Game.GuessFeedback guessFeedback = new Game.GuessFeedback();
         guessFeedback.setGuess(guess);
         guessFeedback.setFeedback(feedback);
+        guessFeedback.setCorrect(isCorrect);
         currentGame.getPreviousGuesses().add(guessFeedback);
     
- 
+        if (isGameOver()) {
+        } else if (isCorrect) {
+            setNewTargetWord();
+            resetTargetWordMap();
+        }
+    
         return new GuessResult(feedback, isCorrect);
     }
-
+    
 
     // Main game logic
     public String checkGuess(String guess) {
